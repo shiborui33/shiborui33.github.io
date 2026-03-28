@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汤阴县高级中学 - 高一九班 | 文科班</title>
+    <style>
+        /* 全局重置与文史专属配色体系 */
+        :root {
+            --primary-color: #2b4b80; /* 沉稳藏青，贴合书卷气质 */
+            --accent-color: #c8102e;  /* 朱砂红，印章/强调色 */
+            --ink-color: #1a1a1a;     /* 墨色，主文字 */
+            --rice-paper: #fdfbf7;    /* 宣纸色，背景 */
+            --bg-dark: #121a29;       /* 深色背景 */
+            --text-light: #f8f5f0;    /* 浅色文字 */
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --shadow-wen: 0 4px 12px rgba(43, 75, 128, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'SimSun', serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--rice-paper);
+            color: var(--ink-color);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* 导航栏样式 - 文史适配 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: transparent;
+        }
+
+        nav.scrolled {
+            background: rgba(253, 251, 247, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-wen);
+            padding: 1rem 5%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s;
+            letter-spacing: 1px;
+        }
+
+        nav.scrolled .logo {
+            color: var(--primary-color);
+        }
+
+        .logo-seal {
+            width: 36px;
+            height: 36px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transform: rotate(5deg);
+            transition: transform 0.3s;
+        }
+
+        nav.scrolled .logo-seal {
+            transform: rotate(0deg);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            margin-left: 2rem;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        nav.scrolled .nav-links a {
+            color: var(--ink-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero 区域 - 卷轴展开动画 */
+        header {
+            height: 100vh;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景笔墨粒子动画 */
+        .ink-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .ink-particle {
+            position: absolute;
+            bottom: -10px;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            animation: float-up 12s infinite ease-in;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0px); }
+            100% { transform: translateY(-1000px) scale(2); opacity: 0; filter: blur(3px); }
+        }
+
+        /* 卷轴展开遮罩 */
+        .scroll-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 3;
+            animation: scroll-open 1.5s ease forwards 0.3s;
+            transform-origin: top;
+        }
+
+        @keyframes scroll-open {
+            to { transform: scaleY(0); opacity: 0; }
+        }
+
+        .hero-content {
+            z-index: 2;
+            color: var(--text-light);
+            max-width: 900px;
+            padding: 0 2rem;
+        }
+
+        .hero-title {
+            font-size: 3.8rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.8s;
+            letter-spacing: 3px;
+            font-weight: 600;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1.1s;
+        }
+
+        .typewriter {
+            color: var(--accent-color);
+            font-weight: bold;
+            border-right: 2px solid var(--accent-color);
+            padding-right: 5px;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink { 50% { border-color: transparent; } }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cta-btn {
+            padding: 1rem 2.5rem;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-block;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1.4s;
+            letter-spacing: 1px;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(200, 16, 46, 0.3);
+        }
+
+        /* 通用 Section 样式 */
+        section {
+            padding: 5rem 10%;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--ink-color);
+            position: relative;
+            letter-spacing: 2px;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-top: -2rem;
+            margin-bottom: 3rem;
+            font-style: italic;
+        }
+
+        /* 班级介绍 - 文史人物卡片 */
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-wen);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: 150px;
+            background-position: 110% 110%;
+            background-repeat: no-repeat;
+            opacity: 0.05;
+            transition: all 0.4s;
+        }
+
+        .card:nth-child(1)::before {
+            content: '为天地立心';
+            font-size: 4rem;
+            font-weight: bold;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 1rem;
+        }
+
+        .card:nth-child(2)::before {
+            content: '师者传道受业解惑';
+            font-size: 3rem;
+            font-weight: bold;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 1rem;
+        }
+
+        .card:nth-child(3)::before {
+            content: '腹有诗书气自华';
+            font-size: 3.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 1rem;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(43, 75, 128, 0.18);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .card:hover::before {
+            opacity: 0.08;
+            background-position: 105% 105%;
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card p {
+            position: relative;
+            z-index: 2;
+            font-size: 1.05rem;
+        }
+
+        /* 文海泛舟 - 文史人物专属板块 */
+        .literature-section {
+            background: linear-gradient(to bottom, var(--rice-paper), #f5f1e9);
+        }
+
+        .figure-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .figure-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.8rem 1.5rem;
+            box-shadow: var(--shadow-wen);
+            transition: all 0.3s ease;
+            text-align: center;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .figure-card:hover {
+            transform: translateY(-8px);
+            border-left-color: var(--accent-color);
+            box-shadow: 0 12px 24px rgba(43, 75, 128, 0.15);
+        }
+
+        .figure-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .figure-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--ink-color);
+            margin-bottom: 0.8rem;
+        }
+
+        .figure-quote {
+            font-size: 0.95rem;
+            color: #64748b;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .figure-quote::before, .figure-quote::after {
+            content: '“';
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+
+        .figure-quote::after {
+            content: '”';
+        }
+
+        /* 班级动态时间轴 - 竹简文史风格 */
+        .timeline-section {
+            background: #f5f1e9;
+        }
+
+        .timeline-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: #d6cbb6;
+        }
+
+        .timeline-item {
+            margin-bottom: 3rem;
+            position: relative;
+            width: 50%;
+            padding-right: 3rem;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item:nth-child(even) {
+            margin-left: 50%;
+            padding-right: 0;
+            padding-left: 3rem;
+            transform: translateX(50px);
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            right: -8px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px #d6cbb6;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -8px;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow-wen);
+        }
+
+        .timeline-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 0.8rem;
+            font-family: 'SimSun', serif;
+        }
+
+        /* 成员风采 - 文科专属称号 */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            height: 250px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #e2e8f0;
+            box-shadow: var(--shadow-wen);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+            padding: 1.5rem;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            color: white;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .gallery-overlay p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* 底部 */
+        footer {
+            background: var(--bg-dark);
+            color: #94a3b8;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .footer-poem {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; letter-spacing: 1px; }
+            .timeline-container::before { left: 20px; }
+            .timeline-item, .timeline-item:nth-child(even) { width: 100%; padding-left: 50px; margin-left: 0; }
+            .timeline-dot, .timeline-item:nth-child(even) .timeline-dot { left: 12px; right: auto; }
+            .nav-links { display: none; }
+            section { padding: 3rem 5%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <div class="logo">
+            <div class="logo-seal">九班</div>
+            汤阴高中 · 高一九班
+        </div>
+        <div class="nav-links">
+            <a href="#home">首页</a>
+            <a href="#about">班级初心</a>
+            <a href="#literature">文海泛舟</a>
+            <a href="#events">班级纪年</a>
+            <a href="#members">同窗风采</a>
+        </div>
+    </nav>
+
+    <!-- Hero 区域 -->
+    <header id="home">
+        <div class="scroll-mask"></div>
+        <div class="ink-particles" id="ink-particles"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">以文载道 · 以史明志</h1>
+            <p class="hero-subtitle">我们是 <span class="typewriter" id="typewriter"></span></p>
+            <a href="#about" class="cta-btn">走进我们的文史天地</a>
+        </div>
+    </header>
+
+    <!-- 班级初心介绍 -->
+    <section id="about">
+        <h2 class="section-title">班级初心</h2>
+        <div class="about-grid">
+            <div class="card">
+                <h3>📜 班级愿景</h3>
+                <p>为天地立心，为生民立命，为往圣继绝学，为万世开太平。我们高一九班，以文为刃，以史为灯，在汤阴县高级中学的沃土上，凝聚50颗赤诚之心，打造团结笃行、勤学善思的文科班集体，让每一位少年都能执笔筑梦，不负韶华。</p>
+            </div>
+            <div class="card">
+                <h3>👨‍🏫 李智英 班主任寄语</h3>
+                <p>“师者，所以传道受业解惑也。愿诸君在这三年里，读万卷书，行万里路，于文史中见天地、见众生、见自己。保持热爱，坚守初心，终能抵达想要的远方。”</p>
+            </div>
+            <div class="card">
+                <h3>✍️ 班级口号</h3>
+                <p>以文为刃，以史为灯<br>
+                2509，壮志不朽<br>
+                成风破浪，挥斥方遒</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 文海泛舟 - 文史人物专属板块 -->
+    <section id="literature" class="literature-section">
+        <h2 class="section-title">文海泛舟</h2>
+        <p class="section-subtitle">以先贤为镜，以经典为友</p>
+        <div class="figure-grid">
+            <div class="figure-card">
+                <div class="figure-icon">📖</div>
+                <div class="figure-name">孔 子</div>
+                <div class="figure-quote">知者不惑，仁者不忧，勇者不惧</div>
+            </div>
+            <div class="figure-card">
+                <div class="figure-icon">🌿</div>
+                <div class="figure-name">屈 原</div>
+                <div class="figure-quote">路漫漫其修远兮，吾将上下而求索</div>
+            </div>
+            <div class="figure-card">
+                <div class="figure-icon">📝</div>
+                <div class="figure-name">司马迁</div>
+                <div class="figure-quote">究天人之际，通古今之变，成一家之言</div>
+            </div>
+            <div class="figure-card">
+                <div class="figure-icon">🌙</div>
+                <div class="figure-name">苏 轼</div>
+                <div class="figure-quote">竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生</div>
+            </div>
+            <div class="figure-card">
+                <div class="figure-icon">✒️</div>
+                <div class="figure-name">鲁 迅</div>
+                <div class="figure-quote">愿中国青年都摆脱冷气，只是向上走</div>
+            </div>
+            <div class="figure-card">
+                <div class="figure-icon">⭐</div>
+                <div class="figure-name">李大钊</div>
+                <div class="figure-quote">青年者，国家之魂也，当以青春之我，创建青春之国家</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 班级动态时间轴 -->
+    <section id="events" class="timeline-section">
+        <h2 class="section-title">班级纪年</h2>
+        <div class="timeline-container">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>初入校园，军训砺志</h3>
+                    <div class="timeline-date">乙巳年秋 · 2025年9月</div>
+                    <p>烈日下的汗水，见证了我们的初遇与蜕变。从陌生到相知，军训让50颗心凝聚成一个整体，开启了高中三年的文史征程。</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>金秋诗会，笔墨抒怀</h3>
+                    <div class="timeline-date">乙巳年菊月 · 2025年10月</div>
+                    <p>我们在校园金秋诗会上大放异彩，原创诗词斩获多个奖项，以笔墨抒少年意气，展现了文科班的风采与底蕴。</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>校运动会，少年锋芒</h3>
+                    <div class="timeline-date">乙巳年冬 · 2025年11月</div>
+                    <p>文能提笔安天下，武能上马定乾坤。赛场上我们挥洒汗水，斩获团体总分前三，证明了文科班少年既能坐冷板凳，也能展凌云志。</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>元旦雅集，辞旧迎新</h3>
+                    <div class="timeline-date">乙巳年腊月 · 2025年12月</div>
+                    <p>一场属于我们的元旦雅集，诗词接龙、历史情景剧、经典诵读，教室里满是书香与欢笑，定格了独属于九班的温暖记忆。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 成员风采 -->
+    <section id="members">
+        <h2 class="section-title">同窗风采</h2>
+        <div class="gallery-grid">
+            <!-- 占位内容，可替换为真实照片与信息 -->
+            <div class="gallery-item">
+                <div style="width:100%; height:100%; background:linear-gradient(45deg, #667eea, #764ba2); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:1.2rem;">文曲星</div>
+                <div class="gallery-overlay">
+                    <h4>太史令 · 学习委员</h4>
+                    <p>博览群书，稳居年级前列</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div style="width:100%; height:100%; background:linear-gradient(45deg, #f093fb, #f5576c); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:1.2rem;">飞将军</div>
+                <div class="gallery-overlay">
+                    <h4>虎贲郎 · 体育委员</h4>
+                    <p>赛场上的追风少年</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div style="width:100%; height:100%; background:linear-gradient(45deg, #4facfe, #00f2fe); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:1.2rem;">翰林笔</div>
+                <div class="gallery-overlay">
+                    <h4>著作郎 · 文艺委员</h4>
+                    <p>妙笔生花，文采斐然</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div style="width:100%; height:100%; background:linear-gradient(45deg, #43e97b, #38f9d7); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:1.2rem;">御史台</div>
+                <div class="gallery-overlay">
+                    <h4>御史中丞 · 纪律班长</h4>
+                    <p>刚正不阿，维持班级秩序</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div style="width:100%; height:100%; background:linear-gradient(45deg, #fa709a, #fee140); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:1.2rem;">鸿胪寺</div>
+                <div class="gallery-overlay">
+                    <h4>鸿胪寺卿 · 组织委员</h4>
+                    <p>统筹活动，凝聚班级力量</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <div style="width:100%; height:100%; background:linear-gradient(45deg, #30cfd0, #330867); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:1.2rem">少年郎</div>
+                <div class="gallery-overlay">
+                    <h4>九班学子</h4>
+                    <p>以梦为马，不负韶华</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p class="footer-poem">追风赶月莫停留，平芜尽处是春山</p>
+        <p>© 2026 汤阴县高级中学 高一九班 | 以文载道 以史明志</p>
+    </footer>
+
+    <script>
+        // 1. 打字机效果 - 文科班专属文案
+        const text = "汤阴高中高一九班文科生";
+        const typewriterEl = document.getElementById('typewriter');
+        let index = 0;
+
+        function type() {
+            if (index < text.length) {
+                typewriterEl.textContent += text.charAt(index);
+                index++;
+                setTimeout(type, 150);
+            } else {
+                // 循环效果
+                setTimeout(() => {
+                    typewriterEl.textContent = '';
+                    index = 0;
+                    type();
+                }, 3000);
+            }
+        }
+        window.addEventListener('load', type);
+
+        // 2. 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 3. 生成背景笔墨粒子
+        const particlesContainer = document.getElementById('ink-particles');
+        for (let i = 0; i < 35; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('ink-particle');
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 10 + 6) + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.width = particle.style.height = (Math.random() * 18 + 6) + 'px';
+            particlesContainer.appendChild(particle);
+        }
+
+        // 4. 时间轴滚动触发动画
+        const observerOptions = {
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>
