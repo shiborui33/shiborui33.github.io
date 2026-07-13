@@ -1,340 +1,899 @@
-﻿<!DOCTYPE html>
+<!-- ⚠️ 使用前请配置下方的 Supabase URL 和 anon key -->
+<!-- 在 Supabase 控制台 → Settings → API 中获取 -->
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>汤阴县高级中学 - 高一九班 | 文科班</title>
-    <style>
-        :root {
-            --primary-color: #2b4b80;
-            --accent-color: #c8102e;
-            --ink-color: #1a1a1a;
-            --rice-paper: #fdfbf7;
-            --bg-dark: #121a29;
-            --text-light: #f8f5f0;
-            --card-bg: rgba(255, 255, 255, 0.92);
-            --shadow-wen: 0 4px 12px rgba(43, 75, 128, 0.12);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft YaHei', 'SimSun', serif; }
-        html { scroll-behavior: smooth; }
-        body { background-color: var(--rice-paper); color: var(--ink-color); overflow-x: hidden; line-height: 1.6; }
-        nav { position: fixed; top: 0; width: 100%; padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: transparent; }
-        nav.scrolled { background: rgba(253, 251, 247, 0.95); backdrop-filter: blur(10px); box-shadow: var(--shadow-wen); padding: 1rem 5%; }
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--text-light); display: flex; align-items: center; gap: 10px; transition: color 0.3s; letter-spacing: 1px; }
-        nav.scrolled .logo { color: var(--primary-color); }
-        .logo-seal { width: 36px; height: 36px; background: var(--accent-color); border-radius: 2px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; transform: rotate(5deg); transition: transform 0.3s; }
-        nav.scrolled .logo-seal { transform: rotate(0deg); }
-        .nav-links a { text-decoration: none; color: var(--text-light); margin-left: 2rem; font-weight: 500; position: relative; transition: color 0.3s; letter-spacing: 0.5px; }
-        nav.scrolled .nav-links a { color: var(--ink-color); }
-        .nav-links a::after { content: ""; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--accent-color); transition: width 0.3s; }
-        .nav-links a:hover::after { width: 100%; }
-        header { height: 100vh; background: linear-gradient(135deg, rgba(18,26,41,0.7) 0%, rgba(30,41,59,0.75) 100%), url("banji.jpg") center/cover no-repeat; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; overflow: hidden; }
-        .ink-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 1; }
-        .ink-particle { position: absolute; bottom: -10px; width: 10px; height: 10px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; animation: float-up 12s infinite ease-in; }
-        @keyframes float-up { 0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0px); } 100% { transform: translateY(-1000px) scale(2); opacity: 0; filter: blur(3px); } }
-        .scroll-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 3; animation: scroll-open 1.5s ease forwards 0.3s; transform-origin: top; }
-        @keyframes scroll-open { to { transform: scaleY(0); opacity: 0; } }
-        .hero-content { z-index: 2; color: var(--text-light); max-width: 900px; padding: 0 2rem; }
-        .hero-title { font-size: 3.8rem; margin-bottom: 1rem; opacity: 0; transform: translateY(30px); animation: fadeInUp 1s ease forwards 0.8s; letter-spacing: 3px; font-weight: 600; }
-        .hero-subtitle { font-size: 1.5rem; color: #cbd5e1; margin-bottom: 2rem; font-weight: 300; opacity: 0; animation: fadeInUp 1s ease forwards 1.1s; }
-        .typewriter { color: var(--accent-color); font-weight: bold; border-right: 2px solid var(--accent-color); padding-right: 5px; animation: blink 0.7s infinite; }
-        @keyframes blink { 50% { border-color: transparent; } }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-        .cta-btn { padding: 1rem 2.5rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 50px; font-weight: bold; transition: transform 0.3s, box-shadow 0.3s; display: inline-block; opacity: 0; animation: fadeInUp 1s ease forwards 1.4s; letter-spacing: 1px; }
-        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(200, 16, 46, 0.3); }
-        section { padding: 5rem 10%; position: relative; }
-        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: var(--ink-color); position: relative; letter-spacing: 2px; }
-        .section-title::after { content: ""; display: block; width: 60px; height: 3px; background: var(--accent-color); margin: 10px auto; border-radius: 2px; }
-        .section-subtitle { text-align: center; font-size: 1.1rem; color: #64748b; margin-top: -2rem; margin-bottom: 3rem; font-style: italic; }
-        .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        .card { background: var(--card-bg); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow-wen); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; perspective: 1000px; position: relative; overflow: hidden; }
-        .card::before { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: 150px; background-position: 110% 110%; background-repeat: no-repeat; opacity: 0.05; transition: all 0.4s; }
-        .card:nth-child(1)::before { content: "为天地立心"; font-size: 4rem; font-weight: bold; display: flex; align-items: flex-end; justify-content: flex-end; padding: 1rem; }
-        .card:nth-child(2)::before { content: "师者传道受业解惑"; font-size: 3rem; font-weight: bold; display: flex; align-items: flex-end; justify-content: flex-end; padding: 1rem; }
-        .card:nth-child(3)::before { content: "腹有诗书气自华"; font-size: 3.5rem; font-weight: bold; display: flex; align-items: flex-end; justify-content: flex-end; padding: 1rem; }
-        .card:hover { transform: translateY(-10px) rotateX(5deg); box-shadow: 0 20px 40px rgba(43, 75, 128, 0.18); border-top: 4px solid var(--primary-color); }
-        .card:hover::before { opacity: 0.08; background-position: 105% 105%; }
-        .card h3 { color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; font-size: 1.4rem; position: relative; z-index: 2; }
-        .card p { position: relative; z-index: 2; font-size: 1.05rem; }
-        .literature-section { background: linear-gradient(to bottom, var(--rice-paper), #f5f1e9); }
-        .figure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.8rem; }
-        .figure-card { background: white; border-radius: 12px; padding: 1.8rem 1.5rem; box-shadow: var(--shadow-wen); transition: all 0.3s ease; text-align: center; border-left: 3px solid var(--primary-color); }
-        .figure-card:hover { transform: translateY(-8px); border-left-color: var(--accent-color); box-shadow: 0 12px 24px rgba(43, 75, 128, 0.15); }
-        .figure-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-        .figure-name { font-size: 1.3rem; font-weight: bold; color: var(--ink-color); margin-bottom: 0.8rem; }
-        .figure-quote { font-size: 0.95rem; color: #64748b; font-style: italic; line-height: 1.5; }
-        .timeline-section { background: #f5f1e9; }
-        .timeline-container { max-width: 800px; margin: 0 auto; position: relative; }
-        .timeline-container::before { content: ""; position: absolute; left: 50%; transform: translateX(-50%); width: 4px; height: 100%; background: #d6cbb6; }
-        .timeline-item { margin-bottom: 3rem; position: relative; width: 50%; padding-right: 3rem; opacity: 0; transform: translateX(-50px); transition: all 0.6s ease; }
-        .timeline-item:nth-child(even) { margin-left: 50%; padding-right: 0; padding-left: 3rem; transform: translateX(50px); }
-        .timeline-item.visible { opacity: 1; transform: translateX(0); }
-        .timeline-dot { position: absolute; right: -8px; top: 0; width: 20px; height: 20px; background: var(--accent-color); border-radius: 50%; border: 4px solid white; box-shadow: 0 0 4px #d6cbb6; }
-        .timeline-item:nth-child(even) .timeline-dot { left: -8px; }
-        .timeline-content { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-wen); }
-        .timeline-content h3 { color: var(--primary-color); margin-bottom: 0.5rem; }
-        .timeline-date { font-size: 0.9rem; color: #64748b; margin-bottom: 0.8rem; font-family: "SimSun", serif; }
-        .timeline-img { width: 100%; border-radius: 8px; margin-top: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
-        .gallery-item { position: relative; height: 250px; border-radius: 12px; overflow: hidden; cursor: pointer; background: #e2e8f0; box-shadow: var(--shadow-wen); }
-        .gallery-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .gallery-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); padding: 1.5rem; transform: translateY(100%); transition: transform 0.4s ease; color: white; }
-        .gallery-item:hover .gallery-overlay { transform: translateY(0); }
-        .gallery-item:hover .gallery-img { transform: scale(1.1); }
-        .gallery-overlay h4 { font-size: 1.2rem; margin-bottom: 0.3rem; }
-        .gallery-overlay p { font-size: 0.9rem; opacity: 0.9; }
-        footer { background: var(--bg-dark); color: #94a3b8; text-align: center; padding: 3rem; }
-        .footer-poem { color: var(--text-light); font-size: 1.1rem; margin-bottom: 1rem; letter-spacing: 1px; }
-        @media (max-width: 768px) {
-            .hero-title { font-size: 2.5rem; letter-spacing: 1px; }
-            .timeline-container::before { left: 20px; }
-            .timeline-item, .timeline-item:nth-child(even) { width: 100%; padding-left: 50px; margin-left: 0; }
-            .timeline-dot, .timeline-item:nth-child(even) .timeline-dot { left: 12px; right: auto; }
-            .nav-links { display: none; }
-            section { padding: 3rem 5%; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汤阴县高级中学 - 高一九班 | 文科班</title>
+<style>
+:root {
+  --primary-color: #2b4b80;
+  --accent-color: #c8102e;
+  --ink-color: #1a1a1a;
+  --rice-paper: #fdfbf7;
+  --bg-dark: #121a29;
+  --text-light: #f8f5f0;
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --shadow-wen: 0 4px 12px rgba(43, 75, 128, 0.12);
+  --success: #059669;
+  --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft YaHei', 'SimSun', serif; }
+html { scroll-behavior: smooth; }
+body { background-color: var(--rice-paper); color: var(--ink-color); overflow-x: hidden; line-height: 1.6; }
+
+/* ===== Navigation ===== */
+nav { position: fixed; top: 0; width: 100%; padding: 1.5rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: transparent; }
+nav.scrolled { background: rgba(253, 251, 247, 0.95); backdrop-filter: blur(10px); box-shadow: var(--shadow-wen); padding: 1rem 5%; }
+.logo { font-size: 1.5rem; font-weight: bold; color: var(--text-light); display: flex; align-items: center; gap: 10px; transition: color 0.3s; letter-spacing: 1px; }
+nav.scrolled .logo { color: var(--primary-color); }
+.logo-seal { width: 36px; height: 36px; background: var(--accent-color); border-radius: 2px; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold; transform: rotate(5deg); transition: transform 0.3s; }
+nav.scrolled .logo-seal { transform: rotate(0deg); }
+.nav-links a { text-decoration: none; color: var(--text-light); margin-left: 2rem; font-weight: 500; position: relative; transition: color 0.3s; letter-spacing: 0.5px; }
+nav.scrolled .nav-links a { color: var(--ink-color); }
+.nav-links a::after { content: ""; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--accent-color); transition: width 0.3s; }
+.nav-links a:hover::after { width: 100%; }
+
+/* ===== Hero ===== */
+header { height: 100vh; background: linear-gradient(135deg, rgba(18,26,41,0.7) 0%, rgba(30,41,59,0.75) 100%), url("banji.jpg") center/cover no-repeat fixed; display: flex; justify-content: center; align-items: center; text-align: center; position: relative; overflow: hidden; }
+.ink-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 1; }
+.ink-particle { position: absolute; bottom: -10px; width: 10px; height: 10px; background: rgba(255,255,255,0.08); border-radius: 50%; animation: float-up 12s infinite ease-in; }
+@keyframes float-up { 0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0px); } 100% { transform: translateY(-1000px) scale(2); opacity: 0; filter: blur(3px); } }
+.scroll-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 3; animation: scroll-open 1.5s ease forwards 0.3s; transform-origin: top; }
+@keyframes scroll-open { to { transform: scaleY(0); opacity: 0; } }
+.hero-content { z-index: 2; color: var(--text-light); max-width: 900px; padding: 0 2rem; }
+.hero-title { font-size: 3.8rem; margin-bottom: 1rem; opacity: 0; transform: translateY(30px); animation: fadeInUp 1s ease forwards 0.8s; letter-spacing: 3px; font-weight: 600; }
+.hero-subtitle { font-size: 1.5rem; color: #cbd5e1; margin-bottom: 2rem; font-weight: 300; opacity: 0; animation: fadeInUp 1s ease forwards 1.1s; }
+.typewriter { color: var(--accent-color); font-weight: bold; border-right: 2px solid var(--accent-color); padding-right: 5px; animation: blink 0.7s infinite; }
+@keyframes blink { 50% { border-color: transparent; } }
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+.cta-btn { padding: 1rem 2.5rem; background: var(--accent-color); color: white; text-decoration: none; border-radius: 50px; font-weight: bold; transition: all 0.3s; display: inline-block; opacity: 0; animation: fadeInUp 1s ease forwards 1.4s; letter-spacing: 1px; }
+.cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(200,16,46,0.3); }
+
+/* ===== Sections ===== */
+section { padding: 5rem 10%; position: relative; }
+.section-title { text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: var(--ink-color); position: relative; letter-spacing: 2px; }
+.section-title::after { content: ""; display: block; width: 60px; height: 3px; background: var(--accent-color); margin: 10px auto; border-radius: 2px; }
+.section-subtitle { text-align: center; font-size: 1.1rem; color: #64748b; margin-top: -2rem; margin-bottom: 3rem; font-style: italic; }
+
+/* ===== Cards (About) ===== */
+.about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+.card { background: var(--card-bg); padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow-wen); transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); transform-style: preserve-3d; perspective: 1000px; position: relative; overflow: hidden; }
+.card::before { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: 150px; background-position: 110% 110%; background-repeat: no-repeat; opacity: 0.05; transition: all 0.4s; }
+.card:nth-child(1)::before { content: "为天地立心"; font-size: 4rem; font-weight: bold; display: flex; align-items: flex-end; justify-content: flex-end; padding: 1rem; }
+.card:nth-child(2)::before { content: "师者传道受业解惑"; font-size: 3rem; font-weight: bold; display: flex; align-items: flex-end; justify-content: flex-end; padding: 1rem; }
+.card:nth-child(3)::before { content: "腹有诗书气自华"; font-size: 3.5rem; font-weight: bold; display: flex; align-items: flex-end; justify-content: flex-end; padding: 1rem; }
+.card:hover { transform: translateY(-10px) rotateX(5deg); box-shadow: 0 20px 40px rgba(43,75,128,0.18); border-top: 4px solid var(--primary-color); }
+.card:hover::before { opacity: 0.08; background-position: 105% 105%; }
+.card h3 { color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; font-size: 1.4rem; position: relative; z-index: 2; }
+.card p { position: relative; z-index: 2; font-size: 1.05rem; white-space: pre-line; }
+
+/* ===== Literature ===== */
+.literature-section { background: linear-gradient(to bottom, var(--rice-paper), #f5f1e9); }
+.figure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.8rem; }
+.figure-card { background: white; border-radius: var(--radius); padding: 1.8rem 1.5rem; box-shadow: var(--shadow-wen); transition: all 0.3s ease; text-align: center; border-left: 3px solid var(--primary-color); }
+.figure-card:hover { transform: translateY(-8px); border-left-color: var(--accent-color); box-shadow: 0 12px 24px rgba(43,75,128,0.15); }
+.figure-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.figure-name { font-size: 1.3rem; font-weight: bold; color: var(--ink-color); margin-bottom: 0.8rem; }
+.figure-quote { font-size: 0.95rem; color: #64748b; font-style: italic; line-height: 1.5; }
+
+/* ===== Timeline ===== */
+.timeline-section { background: #f5f1e9; }
+.timeline-container { max-width: 800px; margin: 0 auto; position: relative; }
+.timeline-container::before { content: ""; position: absolute; left: 50%; transform: translateX(-50%); width: 4px; height: 100%; background: #d6cbb6; }
+.timeline-item { margin-bottom: 3rem; position: relative; width: 50%; padding-right: 3rem; opacity: 0; transform: translateX(-50px); transition: all 0.6s ease; }
+.timeline-item:nth-child(even) { margin-left: 50%; padding-right: 0; padding-left: 3rem; transform: translateX(50px); }
+.timeline-item.visible { opacity: 1; transform: translateX(0); }
+.timeline-dot { position: absolute; right: -8px; top: 0; width: 20px; height: 20px; background: var(--accent-color); border-radius: 50%; border: 4px solid white; box-shadow: 0 0 4px #d6cbb6; }
+.timeline-item:nth-child(even) .timeline-dot { left: -8px; }
+.timeline-content { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-wen); }
+.timeline-content h3 { color: var(--primary-color); margin-bottom: 0.5rem; }
+.timeline-date { font-size: 0.9rem; color: #64748b; margin-bottom: 0.8rem; font-family: "SimSun", serif; }
+.timeline-img { width: 100%; border-radius: 8px; margin-top: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; }
+
+/* ===== Gallery ===== */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+.gallery-item { position: relative; height: 250px; border-radius: var(--radius); overflow: hidden; cursor: pointer; background: #e2e8f0; box-shadow: var(--shadow-wen); }
+.gallery-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+.gallery-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); padding: 1.5rem; transform: translateY(100%); transition: transform 0.4s ease; color: white; }
+.gallery-item:hover .gallery-overlay { transform: translateY(0); }
+.gallery-item:hover .gallery-img { transform: scale(1.1); }
+.gallery-overlay h4 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+.gallery-overlay p { font-size: 0.9rem; opacity: 0.9; }
+
+/* ===== Message Board ===== */
+.message-section { background: linear-gradient(to bottom, var(--rice-paper), #f5f1e9); }
+.message-form { max-width: 600px; margin: 0 auto 3rem; background: white; padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow-wen); }
+.message-form .form-group { margin-bottom: 1.2rem; }
+.message-form label { display: block; font-weight: 600; margin-bottom: 0.4rem; color: var(--ink-color); }
+.message-form input, .message-form textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; background: #f8fafc; font-family: inherit; }
+.message-form input:focus, .message-form textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(43,75,128,0.1); }
+.message-form textarea { min-height: 100px; resize: vertical; }
+.message-form .btn-submit { width: 100%; padding: 0.9rem; background: var(--primary-color); color: white; border: none; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+.message-form .btn-submit:hover { background: #1e3a5f; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(43,75,128,0.3); }
+.message-form .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.message-list { max-width: 700px; margin: 0 auto; }
+.message-item { background: white; padding: 1.5rem; border-radius: var(--radius); margin-bottom: 1rem; box-shadow: var(--shadow-wen); position: relative; transition: transform 0.3s; animation: fadeInUp 0.4s ease; }
+.message-item:hover { transform: translateY(-2px); }
+.message-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
+.message-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+.message-author { font-weight: 600; color: var(--ink-color); }
+.message-time { font-size: 0.8rem; color: #94a3b8; margin-left: auto; }
+.message-content { color: #475569; line-height: 1.7; }
+.message-loading { text-align: center; padding: 2rem; color: #94a3b8; }
+.message-empty { text-align: center; padding: 3rem; color: #94a3b8; font-style: italic; }
+
+/* ===== Admin Panel ===== */
+.admin-trigger { position: fixed; bottom: 20px; right: 20px; z-index: 999; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-dark); color: #94a3b8; border: none; cursor: pointer; font-size: 1.2rem; opacity: 0.5; transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
+.admin-trigger:hover { opacity: 1; color: white; transform: scale(1.1); }
+.admin-trigger.active { background: var(--accent-color); color: white; opacity: 1; }
+.admin-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+.admin-modal.show { display: flex; }
+.admin-modal-content { background: white; padding: 2rem; border-radius: var(--radius); max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.admin-modal-content h3 { margin-bottom: 1.5rem; color: var(--ink-color); text-align: center; }
+.admin-modal-content input { width: 100%; padding: 0.8rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; }
+.admin-modal-content .btn-group { display: flex; gap: 0.8rem; }
+.admin-modal-content .btn { flex: 1; padding: 0.7rem; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+.admin-modal-content .btn-primary { background: var(--primary-color); color: white; }
+.admin-modal-content .btn-secondary { background: #e2e8f0; color: var(--ink-color); }
+.admin-badge { display: none; position: absolute; top: 8px; right: 8px; background: var(--accent-color); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; z-index: 10; }
+.admin-mode .admin-badge { display: block; }
+.admin-badge:hover { opacity: 0.8; }
+.admin-actions { display: none; text-align: center; margin-top: 1rem; }
+.admin-mode .admin-actions { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+.admin-btn { padding: 0.5rem 1.2rem; border: none; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.admin-btn-edit { background: var(--primary-color); color: white; }
+.admin-btn-del { background: var(--accent-color); color: white; }
+.admin-btn-add { background: var(--success); color: white; }
+.admin-btn:hover { transform: scale(1.05); opacity: 0.9; }
+
+/* ===== Image Lightbox ===== */
+.lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; cursor: pointer; }
+.lightbox.show { display: flex; }
+.lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+
+/* ===== Toast ===== */
+.toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 4000; padding: 0.8rem 1.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 0.9rem; animation: fadeInUp 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.toast.success { background: var(--success); }
+.toast.error { background: var(--accent-color); }
+
+/* ===== Footer ===== */
+footer { background: var(--bg-dark); color: #94a3b8; text-align: center; padding: 3rem; }
+.footer-poem { color: var(--text-light); font-size: 1.1rem; margin-bottom: 1rem; letter-spacing: 1px; }
+
+/* ===== Loading skeleton ===== */
+.skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .hero-title { font-size: 2.5rem; letter-spacing: 1px; }
+  .timeline-container::before { left: 20px; }
+  .timeline-item, .timeline-item:nth-child(even) { width: 100%; padding-left: 50px; margin-left: 0; }
+  .timeline-dot, .timeline-item:nth-child(even) .timeline-dot { left: 12px; right: auto; }
+  .nav-links { display: none; }
+  section { padding: 3rem 5%; }
+}
+</style>
 </head>
 <body>
-    <nav id="navbar">
-        <div class="logo">
-            <div class="logo-seal">九班</div>
-            汤阴高中 · 高一九班
-        </div>
-        <div class="nav-links">
-            <a href="#home">首页</a>
-            <a href="#about">班级初心</a>
-            <a href="#literature">文海泛舟</a>
-            <a href="#events">班级纪年</a>
-            <a href="#members">同窗风采</a>
-            <a href="#gallery">班级掠影</a>
-        </div>
-    </nav>
-    <header id="home">
-        <div class="scroll-mask"></div>
-        <div class="ink-particles" id="ink-particles"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">以文载道 · 以史明志</h1>
-            <p class="hero-subtitle">我们是 <span class="typewriter" id="typewriter"></span></p>
-            <a href="#about" class="cta-btn">走进我们的文史天地</a>
-        </div>
-    </header>
-    <section id="about">
-        <h2 class="section-title">班级初心</h2>
-        <div class="about-grid">
-            <div class="card">
-                <h3>📜 班级愿景</h3>
-                <p>为天地立心，为生民立命，为往圣继绝学，为万世开太平。我们高一九班，以文为刃，以史为灯，在汤阴县高级中学的沃土上，凝聚59颗赤诚之心，打造团结笃行、勤学善思的文科班集体，让每一位少年都能执笔筑梦，不负韶华。</p>
-            </div>
-            <div class="card">
-                <h3>👨‍🏫 李智英 班主任寄语</h3>
-                <p>"师者，所以传道受业解惑也。愿诸君在这三年里，读万卷书，行万里路，于文史中见天地、见众生、见自己。保持热爱，坚守初心，终能抵达想要的远方。"</p>
-            </div>
-            <div class="card">
-                <h3>✍️ 班级口号</h3>
-                <p>以文为刃，以史为灯<br>
-                2 5 0 9，壮志不朽<br>
-                成风破浪，挥斥方遒</p>
-            </div>
-        </div>
-    </section>
-    <section id="literature" class="literature-section">
-        <h2 class="section-title">文海泛舟</h2>
-        <p class="section-subtitle">以先贤为镜，以经典为友</p>
-        <div class="figure-grid">
-            <div class="figure-card"><div class="figure-icon">📖</div><div class="figure-name">孔 子</div><div class="figure-quote">知者不惑，仁者不忧，勇者不惧</div></div>
-            <div class="figure-card"><div class="figure-icon">🌿</div><div class="figure-name">屈 原</div><div class="figure-quote">路漫漫其修远兮，吾将上下而求索</div></div>
-            <div class="figure-card"><div class="figure-icon">📝</div><div class="figure-name">司马迁</div><div class="figure-quote">究天人之际，通古今之变，成一家之言</div></div>
-            <div class="figure-card"><div class="figure-icon">🌙</div><div class="figure-name">苏 轼</div><div class="figure-quote">竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生</div></div>
-            <div class="figure-card"><div class="figure-icon">✒️</div><div class="figure-name">鲁 迅</div><div class="figure-quote">愿中国青年都摆脱冷气，只是向上走</div></div>
-            <div class="figure-card"><div class="figure-icon">⭐</div><div class="figure-name">李大钊</div><div class="figure-quote">青年者，国家之魂也，当以青春之我，创建青春之国家</div></div>
-        </div>
-    </section>
-    <section id="events" class="timeline-section">
-        <h2 class="section-title">班级纪年</h2>
-        <div class="timeline-container">
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>选科定档，文理相逢</h3>
-                    <div class="timeline-date">丙午年孟冬 · 2025年11月</div>
-                    <p>秋风微凉，我们迎来了高中生涯第一次重要选择。在选科填报的那一刻，我们不约而同地相聚于文科班。五十余份相似的志愿，让我们从原来的班级汇聚到九班这个大家庭，缘分让我们在此重逢，准备一起书写文科的锦绣篇章。</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>热血长跑，荣膺亚军</h3>
-                    <div class="timeline-date">丙午年仲冬 · 2025年12月</div>
-                    <p>寒风凛冽，却吹不灭九班燃烧的热血。在冬季长跑运动会上，同学们迎着风雪奔跑，用坚定的步伐丈量赛道。经过激烈的角逐，我们不负众望，<strong>荣获第二名</strong>！这是属于我们每一个人的荣誉，也是团结最好的见证。</p>
-                    <img class="timeline-img" src="changpao.jpg" alt="冬季长跑运动会">
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>辞旧迎新，录播献艺</h3>
-                    <div class="timeline-date">丙午年季冬 · 2026年1月</div>
-                    <p>岁末将至，我们相聚在录播室，共同开启特别的元旦晚会。平日里严肃认真的同学们，换上了俏皮的妆容，带来了精彩纷呈的卖萌节目，也为这个寒冷的冬天增添了无数温暖与欢笑。</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>月考表彰，榜样力量</h3>
-                    <div class="timeline-date">丙午年季冬 · 2026年1月</div>
-                    <p>考场如战场，笔锋所至皆是平日苦读的沉淀。在月考颁奖仪式上，九班学子以优异成绩证明了文科班的实力。一张张奖状背后，是无数个挑灯夜战的夜晚，更是对"以文载道"的最好诠释。</p>
-                    <img class="timeline-img" src="yuekaobanjiangyishi.jpg" alt="月考颁奖仪式">
-                    <img class="timeline-img" src="yuekaobanjiangyishi2.jpg" alt="月考颁奖仪式">
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>晨先锋运动会，青春飞扬</h3>
-                    <div class="timeline-date">丙午年孟春 · 2026年3月</div>
-                    <p>晨光熹微中，运动场上已是一片欢腾。九班健儿们在赛场上挥洒汗水，奔跑、跳跃、呐喊——每一个瞬间都闪耀着青春的光芒。不为掌声的诠释，不为刻意的征服，只为心中那份永不言弃的信念。</p>
-                    <img class="timeline-img" src="chenxianfengyundonghui.jpg" alt="晨先锋运动会">
-                    <img class="timeline-img" src="yundonghui2.jpg" alt="运动会风采">
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>班级团建，凝心聚力</h3>
-                    <div class="timeline-date">丙午年仲春 · 2026年4月</div>
-                    <p>走出课堂，融入自然。班级团建活动中，我们放下书本、卸下压力，在欢声笑语中拉近彼此的距离。那些游戏间的默契配合、草坪上的肆意欢笑，让九班这个集体更加紧密地凝聚在一起。</p>
-                    <img class="timeline-img" src="tuanjian.jpg" alt="班级团建活动">
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <h3>琅琅书声，早读时光</h3>
-                    <div class="timeline-date">丙午年 · 日常</div>
-                    <p>一日之计在于晨。当第一缕阳光洒进教室，九班的早读声已回荡在教学楼。朗朗书声中，我们诵读经典、温习功课，用最朴素的方式迎接每一个崭新的日子。这是属于文科班最动人的风景。</p>
-                    <img class="timeline-img" src="zaodu.jpg" alt="早读时光">
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="members">
-        <h2 class="section-title">同窗风采</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <img class="gallery-img" src="tongxue1.jpg" alt="太史令·学习委员 陈雅轩">
-                <div class="gallery-overlay">
-                    <h4>太史令 · 学习委员 陈雅轩</h4>
-                    <p>博览群书，稳居年级前列</p>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img class="gallery-img" src="tongxue2.jpg" alt="虎贲郎·体育委员 陈先锋 李嘉浩">
-                <div class="gallery-overlay">
-                    <h4>虎贲郎 · 体育委员 陈先锋 李嘉浩</h4>
-                    <p>赛场上的追风少年</p>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img class="gallery-img" src="tongxue4.jpg" alt="著作郎·文艺委员 马乐研">
-                <div class="gallery-overlay">
-                    <h4>著作郎 · 文艺委员 马乐研</h4>
-                    <p>妙笔生花，文采斐然</p>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img class="gallery-img" src="tongxue5.jpg" alt="御史中丞·纪律班长 李可">
-                <div class="gallery-overlay">
-                    <h4>御史中丞 · 纪律班长 李可</h4>
-                    <p>刚正不阿，维持班级秩序</p>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img class="gallery-img" src="lijingzhuang.jpg" alt="内阁首辅·班长 石恒源">
-                <div class="gallery-overlay">
-                    <h4>内阁首辅 · 班长 石恒源</h4>
-                    <p>统筹庶务，维系班级秩序</p>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img class="gallery-img" src="yixierrenzamdui.jpg" alt="鸿胪寺卿·卫生委员 史博瑞">
-                <div class="gallery-overlay">
-                    <h4>鸿胪寺卿 · 卫生委员 史博瑞</h4>
-                    <p>统筹活动，凝聚班级力量</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="gallery" style="background: #f5f1e9;">
-        <h2 class="section-title">班级掠影</h2>
-        <p class="section-subtitle">快门按下的瞬间，定格我们不老的青春</p>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <img class="gallery-img" src="banhui.jpg" alt="班级班会">
-                <div class="gallery-overlay">
-                    <h4>班级班会</h4>
-                    <p>共话成长，凝聚共识</p>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img class="gallery-img" src="kejiianke5.jpg" alt="课间掠影">
-                <div class="gallery-overlay">
-                    <h4>课间掠影 · 一</h4>
-                    <p>课间十分钟的欢愉</p>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img class="gallery-img" src="kjjk4.jpg" alt="课间掠影">
-                <div class="gallery-overlay">
-                    <h4>课间掠影 · 二</h4>
-                    <p>青春最美的模样</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <footer>
-        <p class="footer-poem">追风赶月莫停留，平芜尽处是春山</p>
-        <p>© 2026 汤阴县高级中学 高一九班 | 以文载道 以史明志</p>
-    </footer>
-    <script>
-        const text = "汤阴高中高一九班文科生";
-        const typewriterEl = document.getElementById("typewriter");
-        let index = 0;
-        function type() {
-            if (index < text.length) {
-                typewriterEl.textContent += text.charAt(index);
-                index++;
-                setTimeout(type, 150);
-            } else {
-                setTimeout(() => {
-                    typewriterEl.textContent = "";
-                    index = 0;
-                    type();
-                }, 3000);
-            }
-        }
-        window.addEventListener("load", type);
-        const navbar = document.getElementById("navbar");
-        window.addEventListener("scroll", () => {
-            if (window.scrollY > 50) { navbar.classList.add("scrolled"); }
-            else { navbar.classList.remove("scrolled"); }
-        });
-        const particlesContainer = document.getElementById("ink-particles");
-        for (let i = 0; i < 35; i++) {
-            const particle = document.createElement("div");
-            particle.classList.add("ink-particle");
-            particle.style.left = Math.random() * 100 + "%";
-            particle.style.animationDuration = (Math.random() * 10 + 6) + "s";
-            particle.style.animationDelay = Math.random() * 5 + "s";
-            particle.style.width = particle.style.height = (Math.random() * 18 + 6) + "px";
-            particlesContainer.appendChild(particle);
-        }
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) { entry.target.classList.add("visible"); }
-            });
-        }, { threshold: 0.2 });
-        document.querySelectorAll(".timeline-item").forEach(item => { observer.observe(item); });
-    </script>
+
+<nav id="navbar">
+  <div class="logo">
+    <div class="logo-seal">九班</div>
+    汤阴高中 · 高一九班
+  </div>
+  <div class="nav-links">
+    <a href="#home">首页</a>
+    <a href="#about">班级初心</a>
+    <a href="#literature">文海泛舟</a>
+    <a href="#events">班级纪年</a>
+    <a href="#members">同窗风采</a>
+    <a href="#gallery">班级掠影</a>
+    <a href="#messages">留言板</a>
+  </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<header id="home">
+  <div class="scroll-mask"></div>
+  <div class="ink-particles" id="ink-particles"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">以文载道 · 以史明志</h1>
+    <p class="hero-subtitle">我们是 <span class="typewriter" id="typewriter"></span></p>
+    <a href="#about" class="cta-btn">走进我们的文史天地</a>
+  </div>
+</header>
+
+<!-- ===== 班级初心 ===== -->
+<section id="about">
+  <h2 class="section-title">班级初心</h2>
+  <div class="about-grid" id="about-grid">
+    <!-- JS 动态填充 -->
+  </div>
+  <div class="admin-actions" id="about-admin">
+    <button class="admin-btn admin-btn-edit" onclick="editClassInfo()">✏️ 编辑内容</button>
+  </div>
+</section>
+
+<!-- ===== 文海泛舟 ===== -->
+<section id="literature" class="literature-section">
+  <h2 class="section-title">文海泛舟</h2>
+  <p class="section-subtitle">以先贤为镜，以经典为友</p>
+  <div class="figure-grid" id="figure-grid">
+    <!-- JS 动态填充 -->
+  </div>
+</section>
+
+<!-- ===== 班级纪年 ===== -->
+<section id="events" class="timeline-section">
+  <h2 class="section-title">班级纪年</h2>
+  <div class="timeline-container" id="timeline-container">
+    <!-- JS 动态填充 -->
+  </div>
+  <div class="admin-actions" id="events-admin">
+    <button class="admin-btn admin-btn-add" onclick="addEvent()">＋ 添加事件</button>
+  </div>
+</section>
+
+<!-- ===== 同窗风采 ===== -->
+<section id="members">
+  <h2 class="section-title">同窗风采</h2>
+  <div class="gallery-grid" id="members-grid">
+    <!-- JS 动态填充 -->
+  </div>
+  <div class="admin-actions" id="members-admin">
+    <button class="admin-btn admin-btn-add" onclick="addMember()">＋ 添加同学</button>
+  </div>
+</section>
+
+<!-- ===== 班级掠影 ===== -->
+<section id="gallery" style="background: #f5f1e9;">
+  <h2 class="section-title">班级掠影</h2>
+  <p class="section-subtitle">快门按下的瞬间，定格我们不老的青春</p>
+  <div class="gallery-grid" id="gallery-grid">
+    <!-- JS 动态填充 -->
+  </div>
+  <div class="admin-actions" id="gallery-admin">
+    <button class="admin-btn admin-btn-add" onclick="addGalleryPhoto()">＋ 上传照片</button>
+  </div>
+</section>
+
+<!-- ===== 留言板 ===== -->
+<section id="messages" class="message-section">
+  <h2 class="section-title">同窗留言</h2>
+  <p class="section-subtitle">留下你想对九班说的话</p>
+  <div class="message-form" id="message-form">
+    <div class="form-group">
+      <label for="msg-author">你的名字</label>
+      <input type="text" id="msg-author" placeholder="留下你的名字..." maxlength="20" required>
+    </div>
+    <div class="form-group">
+      <label for="msg-content">留言内容</label>
+      <textarea id="msg-content" placeholder="说点什么吧..." maxlength="500" required></textarea>
+    </div>
+    <button class="btn-submit" id="btn-submit-msg" onclick="submitMessage()">📝 发布留言</button>
+  </div>
+  <div class="message-list" id="message-list">
+    <div class="message-loading">加载留言中...</div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer>
+  <p class="footer-poem">追风赶月莫停留，平芜尽处是春山</p>
+  <p>© 2026 汤阴县高级中学 高一九班 | 以文载道 以史明志</p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+    Powered by <a href="https://supabase.com" target="_blank" style="color: #3ecf8e;">Supabase</a>
+  </p>
+</footer>
+
+<!-- ===== Admin Trigger ===== -->
+<button class="admin-trigger" id="admin-trigger" title="管理" onclick="toggleAdmin()">⚙</button>
+
+<!-- ===== Admin Password Modal ===== -->
+<div class="admin-modal" id="admin-modal">
+  <div class="admin-modal-content">
+    <h3>🔐 管理员验证</h3>
+    <input type="password" id="admin-password" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')verifyAdmin()">
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="verifyAdmin()">确认</button>
+      <button class="btn btn-secondary" onclick="closeAdminModal()">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Admin Edit Modal ===== -->
+<div class="admin-modal" id="edit-modal">
+  <div class="admin-modal-content" style="max-width: 500px;">
+    <h3 id="edit-modal-title">编辑内容</h3>
+    <div id="edit-modal-body"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btn-save-edit">保存</button>
+      <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Lightbox ===== -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- ===== Toast ===== -->
+<div id="toast-container"></div>
+
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script>
+// ╔══════════════════════════════════════════╗
+// ║  ⚠️ 配置区：替换为你的 Supabase 项目信息  ║
+// ╚══════════════════════════════════════════╝
+const SUPABASE_URL = 'https://ekvjznlvmfqegbbcnecc.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_gbIryTphJGOjUGUsVPXTPw_AdsxpIUM';
+
+// ==================== Supabase 初始化 ====================
+let supabase;
+let isAdmin = false;
+let adminPassword = '';
+
+try {
+  if (SUPABASE_URL.includes('YOUR-PROJECT')) {
+    console.warn('⚠️ 请配置 Supabase URL 和 anon key（见文件顶部）');
+    supabase = null;
+  } else {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+} catch (e) {
+  console.error('Supabase 初始化失败:', e);
+  supabase = null;
+}
+
+// ==================== 全局工具函数 ====================
+
+function $(id) { return document.getElementById(id); }
+
+function showToast(msg, type = 'success') {
+  const container = $('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 3000);
+}
+
+function timeAgo(dateStr) {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diff = now - date;
+  const mins = Math.floor(diff / 60000);
+  const hrs = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  if (mins < 1) return '刚刚';
+  if (mins < 60) return `${mins} 分钟前`;
+  if (hrs < 24) return `${hrs} 小时前`;
+  if (days < 30) return `${days} 天前`;
+  return date.toLocaleDateString('zh-CN');
+}
+
+function openLightbox(src) {
+  $('lightbox-img').src = src;
+  $('lightbox').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  $('lightbox').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// ==================== 数据加载函数 ====================
+
+// 1. 班级信息
+async function loadClassInfo() {
+  const grid = $('about-grid');
+  if (!supabase) {
+    // 离线模式：显示静态内容
+    grid.innerHTML = `
+      <div class="card"><h3>📜 班级愿景</h3><p>为天地立心，为生民立命，为往圣继绝学，为万世开太平。我们高一九班，以文为刃，以史为灯，在汤阴县高级中学的沃土上，凝聚59颗赤诚之心，打造团结笃行、勤学善思的文科班集体，让每一位少年都能执笔筑梦，不负韶华。</p></div>
+      <div class="card"><h3>👨‍🏫 李智英 班主任寄语</h3><p>"师者，所以传道受业解惑也。愿诸君在这三年里，读万卷书，行万里路，于文史中见天地、见众生、见自己。保持热爱，坚守初心，终能抵达想要的远方。"</p></div>
+      <div class="card"><h3>✍️ 班级口号</h3><p>以文为刃，以史为灯\n2509，壮志不朽\n乘风破浪，挥斥方遒</p></div>
+    `;
+    return;
+  }
+
+  const { data, error } = await supabase.from('class_info').select('section,content');
+  if (error) { console.error('加载班级信息失败:', error); return; }
+  if (!data || data.length === 0) return;
+
+  const info = {};
+  data.forEach(d => { info[d.section] = d.content; });
+
+  const cards = [];
+  if (info.class_vision) {
+    cards.push(`<div class="card"><h3>📜 班级愿景</h3><p>${info.class_vision}</p></div>`);
+  }
+  if (info.teacher_message) {
+    cards.push(`<div class="card"><h3>👨‍🏫 李智英 班主任寄语</h3><p>"${info.teacher_message}"</p></div>`);
+  }
+  if (info.class_slogan) {
+    cards.push(`<div class="card"><h3>✍️ 班级口号</h3><p>${info.class_slogan}</p></div>`);
+  }
+  grid.innerHTML = cards.join('');
+}
+
+// 2. 文学人物
+async function loadLiterature() {
+  const grid = $('figure-grid');
+  if (!supabase) return;
+
+  const { data, error } = await supabase.from('literature_figures').select('*').order('sort_order');
+  if (error) { console.error('加载文学人物失败:', error); return; }
+  if (!data || data.length === 0) return;
+
+  grid.innerHTML = data.map(f => `
+    <div class="figure-card">
+      <div class="figure-icon">${f.icon}</div>
+      <div class="figure-name">${f.name}</div>
+      <div class="figure-quote">${f.quote}</div>
+    </div>
+  `).join('');
+}
+
+// 3. 班级事件（时间线）
+async function loadEvents() {
+  const container = $('timeline-container');
+  if (!supabase) return;
+
+  const { data, error } = await supabase.from('events').select('*').order('sort_order');
+  if (error) { console.error('加载事件失败:', error); return; }
+  if (!data || data.length === 0) return;
+
+  container.innerHTML = data.map((e, i) => `
+    <div class="timeline-item" data-event-id="${e.id}">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h3>${e.title}${isAdmin ? ` <span class="admin-badge" onclick="editEvent('${e.id}')">✏️</span><span class="admin-badge" style="background:#c8102e;margin-left:4px;" onclick="deleteEvent('${e.id}')">🗑</span>` : ''}</h3>
+        <div class="timeline-date">${e.date_text}</div>
+        <p>${e.description}</p>
+        ${e.image_url ? `<img class="timeline-img" src="${e.image_url}" alt="${e.title}" onclick="openLightbox('${e.image_url}')" loading="lazy">` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  // 滚动动画
+  setTimeout(observeTimeline, 200);
+}
+
+// 4. 同学风采
+async function loadMembers() {
+  const grid = $('members-grid');
+  if (!supabase) return;
+
+  const { data, error } = await supabase.from('members').select('*').order('sort_order');
+  if (error) { console.error('加载同学信息失败:', error); return; }
+  if (!data || data.length === 0) return;
+
+  grid.innerHTML = data.map(m => `
+    <div class="gallery-item" data-member-id="${m.id}">
+      <img class="gallery-img" src="${m.image_url || 'banji.jpg'}" alt="${m.title} ${m.name}" loading="lazy" onclick="openLightbox('${m.image_url || 'banji.jpg'}')">
+      <div class="gallery-overlay">
+        <h4>${m.title} ${m.name}${isAdmin ? ` <span class="admin-badge" onclick="event.stopPropagation();editMember('${m.id}')">✏️</span><span class="admin-badge" style="background:#c8102e;margin-left:4px;" onclick="event.stopPropagation();deleteMember('${m.id}')">🗑</span>` : ''}</h4>
+        <p>${m.description}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 5. 班级掠影
+async function loadGallery() {
+  const grid = $('gallery-grid');
+  if (!supabase) return;
+
+  const { data, error } = await supabase.from('gallery_photos').select('*').order('sort_order');
+  if (error) { console.error('加载照片失败:', error); return; }
+  if (!data || data.length === 0) return;
+
+  grid.innerHTML = data.map(p => `
+    <div class="gallery-item" data-gallery-id="${p.id}">
+      <img class="gallery-img" src="${p.image_url}" alt="${p.title}" loading="lazy" onclick="openLightbox('${p.image_url}')">
+      <div class="gallery-overlay">
+        <h4>${p.title}${isAdmin ? ` <span class="admin-badge" onclick="event.stopPropagation();editGallery('${p.id}')">✏️</span><span class="admin-badge" style="background:#c8102e;margin-left:4px;" onclick="event.stopPropagation();deleteGallery('${p.id}')">🗑</span>` : ''}</h4>
+        <p>${p.description}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 6. 留言板
+async function loadMessages() {
+  const list = $('message-list');
+  if (!supabase) {
+    list.innerHTML = '<div class="message-empty">数据库连接后才能加载留言 💬</div>';
+    return;
+  }
+
+  const { data, error } = await supabase.from('messages').select('*').order('created_at', { ascending: false }).limit(50);
+  if (error) { console.error('加载留言失败:', error); return; }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = '<div class="message-empty">还没有留言，来做第一个留言的人吧！✍️</div>';
+    return;
+  }
+
+  list.innerHTML = data.map(m => `
+    <div class="message-item" data-msg-id="${m.id}">
+      ${isAdmin ? `<span class="admin-badge" onclick="deleteMessage('${m.id}')">🗑 删除</span>` : ''}
+      <div class="message-header">
+        <div class="message-avatar">${m.author.charAt(0)}</div>
+        <span class="message-author">${m.author}</span>
+        <span class="message-time">${timeAgo(m.created_at)}</span>
+      </div>
+      <div class="message-content">${m.content}</div>
+    </div>
+  `).join('');
+}
+
+// ==================== 留言提交 ====================
+
+async function submitMessage() {
+  if (!supabase) {
+    showToast('数据库未连接，请先配置 Supabase', 'error');
+    return;
+  }
+
+  const author = $('msg-author').value.trim();
+  const content = $('msg-content').value.trim();
+
+  if (!author) { showToast('请输入你的名字', 'error'); return; }
+  if (!content) { showToast('请输入留言内容', 'error'); return; }
+  if (content.length < 2) { showToast('留言内容太短了', 'error'); return; }
+
+  const btn = $('btn-submit-msg');
+  btn.disabled = true;
+  btn.textContent = '发布中...';
+
+  const { error } = await supabase.from('messages').insert([{ author, content }]);
+
+  if (error) {
+    showToast('发布失败，请稍后再试', 'error');
+    console.error(error);
+  } else {
+    showToast('留言发布成功！🎉');
+    $('msg-author').value = '';
+    $('msg-content').value = '';
+    await loadMessages();
+  }
+
+  btn.disabled = false;
+  btn.textContent = '📝 发布留言';
+}
+
+// ==================== 管理员功能 ====================
+
+function toggleAdmin() {
+  if (isAdmin) {
+    // 退出管理
+    isAdmin = false;
+    adminPassword = '';
+    localStorage.removeItem('class_admin');
+    document.body.classList.remove('admin-mode');
+    $('admin-trigger').classList.remove('active');
+    refreshAll();
+    showToast('已退出管理模式');
+    return;
+  }
+  // 检查本地存储
+  const saved = localStorage.getItem('class_admin');
+  if (saved) {
+    adminPassword = saved;
+    isAdmin = true;
+    document.body.classList.add('admin-mode');
+    $('admin-trigger').classList.add('active');
+    refreshAll();
+    showToast('已进入管理模式 ✨');
+    return;
+  }
+  // 显示密码弹窗
+  $('admin-password').value = '';
+  $('admin-modal').classList.add('show');
+}
+
+async function verifyAdmin() {
+  const pass = $('admin-password').value.trim();
+  if (!pass) { showToast('请输入密码', 'error'); return; }
+  if (!supabase) { showToast('数据库未连接', 'error'); return; }
+
+  const { data, error } = await supabase.rpc('verify_admin', { pass });
+  if (error) { console.error('验证失败:', error); showToast('验证失败', 'error'); return; }
+
+  if (data === true) {
+    isAdmin = true;
+    adminPassword = pass;
+    localStorage.setItem('class_admin', pass);
+    document.body.classList.add('admin-mode');
+    $('admin-trigger').classList.add('active');
+    closeAdminModal();
+    refreshAll();
+    showToast('管理员验证成功！✨');
+  } else {
+    showToast('密码错误', 'error');
+  }
+}
+
+function closeAdminModal() {
+  $('admin-modal').classList.remove('show');
+}
+
+// ==================== 管理员 CRUD ====================
+
+async function adminRPC(fnName, params) {
+  if (!supabase) { showToast('数据库未连接', 'error'); return null; }
+  const { data, error } = await supabase.rpc(fnName, { admin_pass: adminPassword, ...params });
+  if (error) { console.error(error); showToast('操作失败: ' + error.message, 'error'); return null; }
+  if (data && data.error) { showToast(data.error, 'error'); return null; }
+  return data;
+}
+
+// --- 事件管理 ---
+async function deleteEvent(id) {
+  if (!confirm('确定要删除这个事件吗？')) return;
+  const result = await adminRPC('admin_delete_event', { p_id: id });
+  if (result) { showToast('事件已删除'); refreshAll(); }
+}
+
+function addEvent() {
+  $('edit-modal-title').textContent = '添加事件';
+  $('edit-modal-body').innerHTML = `
+    <input id="edit-title" placeholder="事件标题" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-date" placeholder="日期（如：丙午年孟冬 · 2025年11月）" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <textarea id="edit-desc" placeholder="事件描述" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;min-height:100px;margin-bottom:0.8rem;"></textarea>
+    <input id="edit-image" placeholder="图片文件名（可选，如：changpao.jpg）" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;">
+  `;
+  $('btn-save-edit').onclick = async () => {
+    const title = $('edit-title').value.trim();
+    const date_text = $('edit-date').value.trim();
+    const description = $('edit-desc').value.trim();
+    if (!title || !date_text || !description) { showToast('请填写完整信息', 'error'); return; }
+    const result = await adminRPC('admin_insert_event', {
+      p_title: title, p_date_text: date_text, p_description: description, p_image_url: $('edit-image').value.trim() || null, p_sort_order: 99
+    });
+    if (result) { showToast('事件已添加'); closeEditModal(); refreshAll(); }
+  };
+  $('edit-modal').classList.add('show');
+}
+
+async function editEvent(id) {
+  const { data } = await supabase.from('events').select('*').eq('id', id).single();
+  if (!data) return;
+  $('edit-modal-title').textContent = '编辑事件';
+  $('edit-modal-body').innerHTML = `
+    <input id="edit-title" value="${data.title}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-date" value="${data.date_text}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <textarea id="edit-desc" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;min-height:100px;margin-bottom:0.8rem;">${data.description}</textarea>
+    <input id="edit-image" value="${data.image_url || ''}" placeholder="图片文件名" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;">
+  `;
+  $('btn-save-edit').onclick = async () => {
+    const result = await adminRPC('admin_update_event', {
+      p_id: id,
+      p_title: $('edit-title').value.trim(),
+      p_date_text: $('edit-date').value.trim(),
+      p_description: $('edit-desc').value.trim(),
+      p_image_url: $('edit-image').value.trim() || null
+    });
+    if (result) { showToast('事件已更新'); closeEditModal(); refreshAll(); }
+  };
+  $('edit-modal').classList.add('show');
+}
+
+// --- 同学管理 ---
+async function deleteMember(id) {
+  if (!confirm('确定要删除这个同学吗？')) return;
+  const result = await adminRPC('admin_delete_member', { p_id: id });
+  if (result) { showToast('已删除'); refreshAll(); }
+}
+
+function addMember() {
+  $('edit-modal-title').textContent = '添加同学';
+  $('edit-modal-body').innerHTML = `
+    <input id="edit-name" placeholder="姓名" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-title2" placeholder="头衔（如：太史令 · 学习委员）" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-desc2" placeholder="描述" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-image2" placeholder="图片文件名" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;">
+  `;
+  $('btn-save-edit').onclick = async () => {
+    const result = await adminRPC('admin_insert_member', {
+      p_name: $('edit-name').value.trim(),
+      p_title: $('edit-title2').value.trim(),
+      p_description: $('edit-desc2').value.trim(),
+      p_image_url: $('edit-image2').value.trim() || null,
+      p_sort_order: 99
+    });
+    if (result) { showToast('同学已添加'); closeEditModal(); refreshAll(); }
+  };
+  $('edit-modal').classList.add('show');
+}
+
+async function editMember(id) {
+  const { data } = await supabase.from('members').select('*').eq('id', id).single();
+  if (!data) return;
+  $('edit-modal-title').textContent = '编辑同学';
+  $('edit-modal-body').innerHTML = `
+    <input id="edit-name" value="${data.name}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-title2" value="${data.title}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-desc2" value="${data.description}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-image2" value="${data.image_url || ''}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;">
+  `;
+  $('btn-save-edit').onclick = async () => {
+    const result = await adminRPC('admin_update_member', {
+      p_id: id,
+      p_name: $('edit-name').value.trim(),
+      p_title: $('edit-title2').value.trim(),
+      p_description: $('edit-desc2').value.trim(),
+      p_image_url: $('edit-image2').value.trim() || null
+    });
+    if (result) { showToast('已更新'); closeEditModal(); refreshAll(); }
+  };
+  $('edit-modal').classList.add('show');
+}
+
+// --- 照片管理 ---
+async function deleteGallery(id) {
+  if (!confirm('确定要删除这张照片吗？')) return;
+  const result = await adminRPC('admin_delete_gallery', { p_id: id });
+  if (result) { showToast('照片已删除'); refreshAll(); }
+}
+
+function addGalleryPhoto() {
+  $('edit-modal-title').textContent = '添加照片';
+  $('edit-modal-body').innerHTML = `
+    <input id="edit-gtitle" placeholder="照片标题" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-gdesc" placeholder="照片描述" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-gurl" placeholder="图片文件名或URL" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;">
+  `;
+  $('btn-save-edit').onclick = async () => {
+    const result = await adminRPC('admin_insert_gallery', {
+      p_title: $('edit-gtitle').value.trim(),
+      p_description: $('edit-gdesc').value.trim(),
+      p_image_url: $('edit-gurl').value.trim(),
+      p_sort_order: 99
+    });
+    if (result) { showToast('照片已添加'); closeEditModal(); refreshAll(); }
+  };
+  $('edit-modal').classList.add('show');
+}
+
+async function editGallery(id) {
+  const { data } = await supabase.from('gallery_photos').select('*').eq('id', id).single();
+  if (!data) return;
+  $('edit-modal-title').textContent = '编辑照片';
+  $('edit-modal-body').innerHTML = `
+    <input id="edit-gtitle" value="${data.title}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-gdesc" value="${data.description}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-gurl" value="${data.image_url}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;">
+  `;
+  $('btn-save-edit').onclick = async () => {
+    const result = await adminRPC('admin_update_gallery', {
+      p_id: id,
+      p_title: $('edit-gtitle').value.trim(),
+      p_description: $('edit-gdesc').value.trim(),
+      p_image_url: $('edit-gurl').value.trim()
+    });
+    if (result) { showToast('已更新'); closeEditModal(); refreshAll(); }
+  };
+  $('edit-modal').classList.add('show');
+}
+
+// --- 班级信息编辑 ---
+async function editClassInfo() {
+  const { data } = await supabase.from('class_info').select('section,content').not('section', 'eq', 'admin_password');
+  if (!data) return;
+  $('edit-modal-title').textContent = '编辑班级信息';
+  $('edit-modal-body').innerHTML = data.map(d => `
+    <label style="font-weight:600;margin-bottom:0.3rem;display:block;">${d.section === 'class_vision' ? '班级愿景' : d.section === 'teacher_message' ? '班主任寄语' : '班级口号'}</label>
+    <textarea id="edit-${d.section}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;min-height:80px;margin-bottom:1rem;">${d.content}</textarea>
+  `).join('');
+  $('btn-save-edit').onclick = async () => {
+    for (const d of data) {
+      const val = $(`edit-${d.section}`).value.trim();
+      if (val) await adminRPC('admin_update_class_info', { p_section: d.section, p_content: val });
+    }
+    showToast('班级信息已更新'); closeEditModal(); refreshAll();
+  };
+  $('edit-modal').classList.add('show');
+}
+
+// --- 留言删除 ---
+async function deleteMessage(id) {
+  if (!confirm('确定要删除这条留言吗？')) return;
+  const result = await adminRPC('admin_delete_message', { p_id: id });
+  if (result) { showToast('留言已删除'); loadMessages(); }
+}
+
+function closeEditModal() {
+  $('edit-modal').classList.remove('show');
+}
+
+// ==================== 辅助函数 ====================
+
+function refreshAll() {
+  loadClassInfo();
+  loadLiterature();
+  loadEvents();
+  loadMembers();
+  loadGallery();
+  loadMessages();
+}
+
+// 时间线滚动动画
+function observeTimeline() {
+  const items = document.querySelectorAll('.timeline-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  items.forEach(item => observer.observe(item));
+}
+
+// ==================== 初始化 ====================
+
+// 打字机效果
+const text = "汤阴高中高一九班文科生";
+let typewriterIndex = 0;
+function type() {
+  const el = $('typewriter');
+  if (!el) return;
+  if (typewriterIndex < text.length) {
+    el.textContent += text.charAt(typewriterIndex);
+    typewriterIndex++;
+    setTimeout(type, 150);
+  } else {
+    setTimeout(() => { el.textContent = ''; typewriterIndex = 0; type(); }, 3000);
+  }
+}
+window.addEventListener('load', type);
+
+// 导航滚动效果
+window.addEventListener('scroll', () => {
+  const navbar = $('navbar');
+  if (window.scrollY > 50) navbar.classList.add('scrolled');
+  else navbar.classList.remove('scrolled');
+});
+
+// 墨点粒子
+(function createParticles() {
+  const container = $('ink-particles');
+  if (!container) return;
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.classList.add('ink-particle');
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 12 + 's';
+    p.style.animationDuration = (8 + Math.random() * 16) + 's';
+    p.style.width = p.style.height = (4 + Math.random() * 12) + 'px';
+    container.appendChild(p);
+  }
+})();
+
+// 页面加载
+document.addEventListener('DOMContentLoaded', () => {
+  // 检查是否已登录管理
+  const saved = localStorage.getItem('class_admin');
+  if (saved) {
+    adminPassword = saved;
+    isAdmin = true;
+    document.body.classList.add('admin-mode');
+    $('admin-trigger').classList.add('active');
+  }
+  refreshAll();
+});
+</script>
+
 </body>
 </html>
