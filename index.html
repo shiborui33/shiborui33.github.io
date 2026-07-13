@@ -1,4 +1,4 @@
-<!-- ⚠️ 使用前请配置下方的 Supabase URL 和 anon key -->
+﻿<!-- ⚠️ 使用前请配置下方的 Supabase URL 和 anon key -->
 <!-- 在 Supabase 控制台 → Settings → API 中获取 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -427,7 +427,7 @@ async function loadClassInfo() {
 // 2. 文学人物
 async function loadLiterature() {
   const grid = $('figure-grid');
-  if (!supabase) return;
+  if (!supabase) { grid.innerHTML = '<div class="figure-card"><div class="figure-icon">📖</div><div class="figure-name">孔 子</div><div class="figure-quote">知者不惑，仁者不忧，勇者不惧</div></div><div class="figure-card"><div class="figure-icon">🌿</div><div class="figure-name">屈 原</div><div class="figure-quote">路漫漫其修远兮，吾将上下而求索</div></div><div class="figure-card"><div class="figure-icon">📝</div><div class="figure-name">司马迁</div><div class="figure-quote">究天人之际，通古今之变，成一家之言</div></div><div class="figure-card"><div class="figure-icon">🌙</div><div class="figure-name">苏 轼</div><div class="figure-quote">竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生</div></div><div class="figure-card"><div class="figure-icon">✒️</div><div class="figure-name">鲁 迅</div><div class="figure-quote">愿中国青年都摆脱冷气，只是向上走</div></div><div class="figure-card"><div class="figure-icon">⭐</div><div class="figure-name">李大钊</div><div class="figure-quote">青年者，国家之魂也，当以青春之我，创建青春之国家</div></div>'; return; }
 
   const { data, error } = await supabase.from('literature_figures').select('*').order('sort_order');
   if (error) { console.error('加载文学人物失败:', error); return; }
@@ -445,7 +445,7 @@ async function loadLiterature() {
 // 3. 班级事件（时间线）
 async function loadEvents() {
   const container = $('timeline-container');
-  if (!supabase) return;
+  if (!supabase) { container.innerHTML = '<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>选科定档，文理相逢</h3><div class="timeline-date">丙午年孟冬 · 2025年11月</div><p>秋风微凉，我们迎来了高中生涯第一次重要选择。在选科填报的那一刻，我们不约而同地相聚于文科班。五十余份相似的志愿，让我们从原来的班级汇聚到九班这个大家庭，缘分让我们在此重逢，准备一起书写文科的锦绣篇章。</p></div></div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>热血长跑，荣膺亚军</h3><div class="timeline-date">丙午年仲冬 · 2025年12月</div><p>寒风凛冽，却吹不灭九班燃烧的热血。在冬季长跑运动会上，同学们迎着风雪奔跑，用坚定的步伐丈量赛道。经过激烈的角逐，我们不负众望，<strong>荣获第二名</strong>！这是属于我们每一个人的荣誉，也是团结最好的见证。</p><img class="timeline-img" src="changpao.jpg" alt="冬季长跑运动会"></div></div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>辞旧迎新，录播献艺</h3><div class="timeline-date">丙午年季冬 · 2026年1月</div><p>岁末将至，我们相聚在录播室，共同开启特别的元旦晚会。平日里严肃认真的同学们，换上了俏皮的妆容，带来了精彩纷呈的卖萌节目，也为这个寒冷的冬天增添了无数温暖与欢笑。</p></div></div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>月考表彰，榜样力量</h3><div class="timeline-date">丙午年季冬 · 2026年1月</div><p>考场如战场，笔锋所至皆是平日苦读的沉淀。在月考颁奖仪式上，九班学子以优异成绩证明了文科班的实力。一张张奖状背后，是无数个挑灯夜战的夜晚，更是对"以文载道"的最好诠释。</p><img class="timeline-img" src="yuekaobanjiangyishi.jpg" alt="月考颁奖仪式"></div></div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>晨先锋运动会，青春飞扬</h3><div class="timeline-date">丙午年孟春 · 2026年3月</div><p>晨光熹微中，运动场上已是一片欢腾。九班健儿们在赛场上挥洒汗水，奔跑、跳跃、呐喊——每一个瞬间都闪耀着青春的光芒。不为掌声的诠释，不为刻意的征服，只为心中那份永不言弃的信念。</p><img class="timeline-img" src="chenxianfengyundonghui.jpg" alt="晨先锋运动会"></div></div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>班级团建，凝心聚力</h3><div class="timeline-date">丙午年仲春 · 2026年4月</div><p>走出课堂，融入自然。班级团建活动中，我们放下书本、卸下压力，在欢声笑语中拉近彼此的距离。那些游戏间的默契配合、草坪上的肆意欢笑，让九班这个集体更加紧密地凝聚在一起。</p><img class="timeline-img" src="tuanjian.jpg" alt="班级团建活动"></div></div><div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><h3>琅琅书声，早读时光</h3><div class="timeline-date">丙午年 · 日常</div><p>一日之计在于晨。当第一缕阳光洒进教室，九班的早读声已回荡在教学楼。朗朗书声中，我们诵读经典、温习功课，用最朴素的方式迎接每一个崭新的日子。这是属于文科班最动人的风景。</p><img class="timeline-img" src="zaodu.jpg" alt="早读时光"></div></div>'; setTimeout(observeTimeline, 200); return; }
 
   const { data, error } = await supabase.from('events').select('*').order('sort_order');
   if (error) { console.error('加载事件失败:', error); return; }
@@ -470,7 +470,7 @@ async function loadEvents() {
 // 4. 同学风采
 async function loadMembers() {
   const grid = $('members-grid');
-  if (!supabase) return;
+  if (!supabase) { grid.innerHTML = '<div class="gallery-item"><img class="gallery-img" src="tongxue1.jpg" alt="太史令·学习委员 陈雅轩"><div class="gallery-overlay"><h4>太史令 · 学习委员 陈雅轩</h4><p>博览群书，稳居年级前列</p></div></div><div class="gallery-item"><img class="gallery-img" src="tongxue2.jpg" alt="虎贲郎·体育委员 陈先锋 李嘉浩"><div class="gallery-overlay"><h4>虎贲郎 · 体育委员 陈先锋 李嘉浩</h4><p>赛场上的追风少年</p></div></div><div class="gallery-item"><img class="gallery-img" src="tongxue4.jpg" alt="著作郎·文艺委员 马乐研"><div class="gallery-overlay"><h4>著作郎 · 文艺委员 马乐研</h4><p>妙笔生花，文采斐然</p></div></div><div class="gallery-item"><img class="gallery-img" src="tongxue5.jpg" alt="御史中丞·纪律班长 李可"><div class="gallery-overlay"><h4>御史中丞 · 纪律班长 李可</h4><p>刚正不阿，维持班级秩序</p></div></div><div class="gallery-item"><img class="gallery-img" src="lijingzhuang.jpg" alt="内阁首辅·班长 石恒源"><div class="gallery-overlay"><h4>内阁首辅 · 班长 石恒源</h4><p>统筹庶务，维系班级秩序</p></div></div><div class="gallery-item"><img class="gallery-img" src="yixierrenzamdui.jpg" alt="鸿胪寺卿·卫生委员 史博瑞"><div class="gallery-overlay"><h4>鸿胪寺卿 · 卫生委员 史博瑞</h4><p>统筹活动，凝聚班级力量</p></div></div>'; return; }
 
   const { data, error } = await supabase.from('members').select('*').order('sort_order');
   if (error) { console.error('加载同学信息失败:', error); return; }
@@ -490,7 +490,7 @@ async function loadMembers() {
 // 5. 班级掠影
 async function loadGallery() {
   const grid = $('gallery-grid');
-  if (!supabase) return;
+  if (!supabase) { grid.innerHTML = '<div class="gallery-item"><img class="gallery-img" src="banhui.jpg" alt="班级班会"><div class="gallery-overlay"><h4>班级班会</h4><p>共话成长，凝聚共识</p></div></div><div class="gallery-item"><img class="gallery-img" src="kejiianke5.jpg" alt="课间掠影"><div class="gallery-overlay"><h4>课间掠影 · 一</h4><p>课间十分钟的欢愉</p></div></div><div class="gallery-item"><img class="gallery-img" src="kjjk4.jpg" alt="课间掠影"><div class="gallery-overlay"><h4>课间掠影 · 二</h4><p>青春最美的模样</p></div></div>'; return; }
 
   const { data, error } = await supabase.from('gallery_photos').select('*').order('sort_order');
   if (error) { console.error('加载照片失败:', error); return; }
