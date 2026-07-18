@@ -91,7 +91,7 @@ ALTER TABLE messages         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE literature_figures ENABLE ROW LEVEL SECURITY;
 
 -- 公开读取策略：所有表允许任何人读取
-CREATE POLICY "public_read_class_info"   ON class_info          FOR SELECT USING (true);
+CREATE POLICY "public_read_class_info"   ON class_info          FOR SELECT USING (section != 'admin_password');
 CREATE POLICY "public_read_events"       ON events              FOR SELECT USING (true);
 CREATE POLICY "public_read_members"      ON members             FOR SELECT USING (true);
 CREATE POLICY "public_read_gallery"      ON gallery_photos      FOR SELECT USING (true);
@@ -380,6 +380,75 @@ BEGIN
   END IF;
 
   DELETE FROM messages WHERE id = p_id;
+  RETURN jsonb_build_object('success', true);
+END;
+$$;
+
+-- 文学人物新增
+CREATE OR REPLACE FUNCTION admin_insert_literature(
+  admin_pass  TEXT,
+  p_name      TEXT,
+  p_quote     TEXT,
+  p_icon      TEXT DEFAULT '📖',
+  p_sort_order INT DEFAULT 0
+)
+RETURNS JSONB
+LANGUAGE plpgsql SECURITY DEFINER
+AS $$
+BEGIN
+  IF NOT verify_admin(admin_pass) THEN
+    RETURN jsonb_build_object('success', false, 'error', '密码错误');
+  END IF;
+
+  INSERT INTO literature_figures (name, quote, icon, sort_order)
+  VALUES (p_name, p_quote, p_icon, p_sort_order);
+
+  RETURN jsonb_build_object('success', true);
+END;
+$$;
+
+-- 文学人物更新
+CREATE OR REPLACE FUNCTION admin_update_literature(
+  admin_pass   TEXT,
+  p_id         UUID,
+  p_name       TEXT DEFAULT NULL,
+  p_quote      TEXT DEFAULT NULL,
+  p_icon       TEXT DEFAULT NULL,
+  p_sort_order INT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql SECURITY DEFINER
+AS $$
+BEGIN
+  IF NOT verify_admin(admin_pass) THEN
+    RETURN jsonb_build_object('success', false, 'error', '密码错误');
+  END IF;
+
+  UPDATE literature_figures SET
+    name       = COALESCE(p_name, name),
+    quote      = COALESCE(p_quote, quote),
+    icon       = COALESCE(p_icon, icon),
+    sort_order = COALESCE(p_sort_order, sort_order)
+  WHERE id = p_id;
+
+  RETURN jsonb_build_object('success', true);
+END;
+$$;
+
+-- 文学人物删除
+CREATE OR REPLACE FUNCTION admin_delete_literature(
+  admin_pass TEXT,
+  p_id       UUID
+)
+RETURNS JSONB
+LANGUAGE plpgsql SECURITY DEFINER
+AS $$
+BEGIN
+  IF NOT verify_admin(admin_pass) THEN
+    RETURN jsonb_build_object('success', false, 'error', '密码错误');
+  END IF;
+
+  DELETE FROM literature_figures WHERE id = p_id;
   RETURN jsonb_build_object('success', true);
 END;
 $$;

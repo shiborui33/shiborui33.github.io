@@ -224,6 +224,9 @@ footer { background: var(--bg-dark); color: #94a3b8; text-align: center; padding
   <div class="figure-grid" id="figure-grid">
     <!-- JS 动态填充 -->
   </div>
+  <div class="admin-actions" id="literature-admin">
+    <button class="admin-btn admin-btn-add" onclick="addLiterature()">＋ 添加先贤</button>
+  </div>
 </section>
 
 <!-- ===== 班级纪年 ===== -->
@@ -332,7 +335,7 @@ footer { background: var(--bg-dark); color: #94a3b8; text-align: center; padding
 // ║  ⚠️ 配置区：替换为你的 Supabase 项目信息  ║
 // ╚══════════════════════════════════════════╝
 const SUPABASE_URL = 'https://ekvjznlvmfqegbbcnecc.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_gbIryTphJGOjUGUsVPXTPw_AdsxpIUM';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrdmp6bmx2bWZxZWdiYmNuZWNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5NDQ5MzQsImV4cCI6MjA5OTUyMDkzNH0.fpfRitU2DKDlVtk93Nmk-BF5NFDl1t5ViXuIAnNWVl4';
 
 // ==================== Supabase 初始化 ====================
 let supabase;
@@ -368,6 +371,7 @@ function timeAgo(dateStr) {
   const now = new Date();
   const date = new Date(dateStr);
   const diff = now - date;
+  if (diff < 0) return '刚刚';
   const mins = Math.floor(diff / 60000);
   const hrs = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
@@ -434,7 +438,8 @@ async function loadLiterature() {
   if (!data || data.length === 0) return;
 
   grid.innerHTML = data.map(f => `
-    <div class="figure-card">
+    <div class="figure-card" data-lit-id="${f.id}">
+      ${isAdmin ? `<span class="admin-badge" onclick="event.stopPropagation();editLiterature('${f.id}')">✏️</span><span class="admin-badge" style="background:#c8102e;margin-left:4px;" onclick="event.stopPropagation();deleteLiterature('${f.id}')">🗑</span>` : ''}
       <div class="figure-icon">${f.icon}</div>
       <div class="figure-name">${f.name}</div>
       <div class="figure-quote">${f.quote}</div>
@@ -796,11 +801,16 @@ async function editClassInfo() {
     <textarea id="edit-${d.section}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;min-height:80px;margin-bottom:1rem;">${d.content}</textarea>
   `).join('');
   $('btn-save-edit').onclick = async () => {
+    let hasError = false;
     for (const d of data) {
       const val = $(`edit-${d.section}`).value.trim();
-      if (val) await adminRPC('admin_update_class_info', { p_section: d.section, p_content: val });
+      if (!val) continue;
+      const result = await adminRPC('admin_update_class_info', { p_section: d.section, p_content: val });
+      if (!result) { hasError = true; break; }
     }
-    showToast('班级信息已更新'); closeEditModal(); refreshAll();
+    if (!hasError) {
+      showToast('班级信息已更新'); closeEditModal(); refreshAll();
+    }
   };
   $('edit-modal').classList.add('show');
 }
@@ -812,9 +822,67 @@ async function deleteMessage(id) {
   if (result) { showToast('留言已删除'); loadMessages(); }
 }
 
+// --- 文学人物管理 ---
+async function deleteLiterature(id) {
+  if (!confirm('确定要删除这个先贤人物吗？')) return;
+  const result = await adminRPC('admin_delete_literature', { p_id: id });
+  if (result) { showToast('已删除'); refreshAll(); }
+}
+
+function addLiterature() {
+  $('edit-modal-title').textContent = '添加先贤人物';
+  $('edit-modal-body').innerHTML = `
+    <input id="edit-lit-name" placeholder="姓名（如：孔 子）" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-lit-quote" placeholder="名言（如：知者不惑，仁者不忧，勇者不惧）" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-lit-icon" placeholder="图标 emoji（如：📖）" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;">
+  `;
+  $('btn-save-edit').onclick = async () => {
+    const name = $('edit-lit-name').value.trim();
+    const quote = $('edit-lit-quote').value.trim();
+    if (!name || !quote) { showToast('请填写姓名和名言', 'error'); return; }
+    const result = await adminRPC('admin_insert_literature', {
+      p_name: name,
+      p_quote: quote,
+      p_icon: $('edit-lit-icon').value.trim() || '📖',
+      p_sort_order: 99
+    });
+    if (result) { showToast('先贤人物已添加'); closeEditModal(); refreshAll(); }
+  };
+  $('edit-modal').classList.add('show');
+}
+
+async function editLiterature(id) {
+  const { data } = await supabase.from('literature_figures').select('*').eq('id', id).single();
+  if (!data) return;
+  $('edit-modal-title').textContent = '编辑先贤人物';
+  $('edit-modal-body').innerHTML = `
+    <input id="edit-lit-name" value="${data.name}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-lit-quote" value="${data.quote}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:0.8rem;">
+    <input id="edit-lit-icon" value="${data.icon || ''}" style="width:100%;padding:0.8rem;border:1px solid #e2e8f0;border-radius:8px;">
+  `;
+  $('btn-save-edit').onclick = async () => {
+    const result = await adminRPC('admin_update_literature', {
+      p_id: id,
+      p_name: $('edit-lit-name').value.trim(),
+      p_quote: $('edit-lit-quote').value.trim(),
+      p_icon: $('edit-lit-icon').value.trim() || null
+    });
+    if (result) { showToast('已更新'); closeEditModal(); refreshAll(); }
+  };
+  $('edit-modal').classList.add('show');
+}
+
 function closeEditModal() {
   $('edit-modal').classList.remove('show');
 }
+
+// Escape 键关闭弹窗
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if ($('edit-modal').classList.contains('show')) closeEditModal();
+    else if ($('admin-modal').classList.contains('show')) closeAdminModal();
+  }
+});
 
 // ==================== 辅助函数 ====================
 
